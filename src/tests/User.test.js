@@ -8,30 +8,27 @@ import {
   waitFor,
   act,
 } from '@testing-library/react';
-import axiosMock from 'axios';
 import User from '../components/User';
 
 describe('<User />', () => {
   afterEach(cleanup);
 
   test('renders Users', async () => {
-    axiosMock.get.mockResolvedValueOnce({
-      data: {
-        avatarUrl: '!',
-        displayName: 'bobLead',
-        firstName: 'Bob',
-        id: 'team-1-lead',
-        lastName: 'G',
-        location: 'Canada',
-      },
-    });
+    const user = {
+      avatarUrl: '!',
+      displayName: 'bobLead',
+      firstName: 'Bob',
+      id: 'team-1-lead',
+      lastName: 'G',
+      location: 'Canada',
+    };
 
     await act(async () => {
       // since User returns <tr> need to wrap in proper table HTML to avoid warnings
       render(
         <table>
           <tbody>
-            <User userId={'team-1-lead'} isTeamLead={true} />
+            <User user={user} isTeamLead={true} />
           </tbody>
         </table>,
       );

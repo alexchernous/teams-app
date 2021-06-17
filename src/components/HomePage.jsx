@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Team from './Team';
 import constants from '../constants';
@@ -16,6 +15,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (!teams) {
+      // fetch basic teams data
       axios.get(constants.endpoints.teams)
         .then((res) => {
           setTeams(res.data);
@@ -25,6 +25,7 @@ const HomePage = () => {
     }
   }, [teams]);
 
+  // input field handling
   const handleInputChange = (event) => {
     const teamName = event.target.value;
     setFilteredTeamName(teamName);
@@ -34,6 +35,7 @@ const HomePage = () => {
         (team) => teamNamePattern.test(team.name.toLowerCase()),
       ));
     } else {
+      // update back to full list
       setFilteredTeams(teams);
     }
   };
@@ -42,25 +44,27 @@ const HomePage = () => {
     <div style={{ textAlign: 'left' }}>
       <TextField
         style={{ margin: '10px' }}
-        id="team-filter"
-        label="Filter teams..."
-        size="medium"
+        id='team-filter'
+        label='Filter teams...'
+        size='medium'
         value={filteredTeamName}
-        variant="outlined"
+        variant='outlined'
         onChange={handleInputChange}
+        fullWidth
       />
       {filteredTeams && filteredTeams.map((team) => (
         <Accordion
           key={team.id}
+          data-testid={team.id}
           style={{ margin: '10px' }}
           onChange={(() => setSelectedTeam(team.id))}
         >
           <AccordionSummary
             expandIcon={'+'}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
+            aria-controls='panel1a-content'
+            id='panel1a-header'
           >
-            <Typography>{team.name}</Typography>
+            {team.name}
           </AccordionSummary>
           <Team team={team} selectedTeam={selectedTeam} />
         </Accordion>

@@ -15,9 +15,7 @@ jest.mock('../components/User', () => ({
   __esModule: true,
   default: () => (
     <tr>
-      <td style={{ display: 'flex', textAlign: 'center', alignItems: 'center' }}>
-        image
-      </td>
+      <td>image</td>
       <td>displayName</td>
       <td>firstName</td>
       <td>lastName</td>
@@ -35,21 +33,42 @@ describe('<Team />', () => {
   };
 
   test('renders Teams', async () => {
+    // for /team/<id>
     axiosMock.get.mockResolvedValueOnce({
       data: {
         id: 'team-id-1',
         name: 'Team 1 name',
         teamLeadId: 'team-1-lead',
-        teamMemberIds: ['team-1-member-1', 'team-1-member-2'],
+        teamMemberIds: ['team-1-member-1'],
       },
     });
+    // for /user/<id> promises
+    axiosMock.all.mockResolvedValueOnce([{
+      data: {
+        avatarUrl: '!',
+        displayName: 'bobLead',
+        firstName: 'Bob',
+        id: 'team-1-lead',
+        lastName: 'G',
+        location: 'Canada',
+      },
+    }, {
+      data: {
+        avatarUrl: '@',
+        displayName: 'lucyMember',
+        firstName: 'Lucy',
+        id: 'team-1-member',
+        lastName: 'L',
+        location: 'Canada',
+      },
+    }]);
 
     await act(async () => {
       render(<Team team={team} selectedTeam='team-id-1' />);
       await waitFor(() => {
-        const teamName = screen.getByTestId('team-id-1');
-        // team id exists
-        expect(teamName).toBeInTheDocument();
+        const teamDiv = screen.getByTestId('team-id-1');
+        // team exists
+        expect(teamDiv).toBeInTheDocument();
       });
     });
   });

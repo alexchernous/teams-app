@@ -8,17 +8,10 @@ import constants from '../constants';
 
 const Team = (props) => {
   const { team, selectedTeam } = props;
-  const tableHeaders = [
-    'Avatar',
-    'Display Name',
-    'First Name',
-    'Last Name',
-    'Location',
-  ];
   const [users, setUsers] = useState(null);
   const [firstFetch, setFirstFetch] = useState(true);
-  // const [filteredUsers, setFilteredUsers] = useState(null);
-  // const [filteredUserString, setFilteredUserString] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState(null);
+  const [filteredUserString, setFilteredUserString] = useState('');
   const [teamLeadId, setTeamLeadId] = useState('');
 
   useEffect(() => {
@@ -26,59 +19,75 @@ const Team = (props) => {
       // fetch specific team details
       axios.get(constants.endpoints.team(team.id))
         .then((res) => {
+          // set team lead
           setTeamLeadId(res.data.teamLeadId);
-          // merge lead and members into users list
-          setUsers([res.data.teamLeadId, ...res.data.teamMemberIds]);
-          // for filtering purposes
-          // setFilteredUsers([res.data.teamLeadId, ...res.data.teamMemberIds]);
+          // merge lead and members into single list
+          const userIds = [res.data.teamLeadId, ...res.data.teamMemberIds];
+          // avoiding fetching again if accordion is reopen
           setFirstFetch(false);
+
+          const userPromises = userIds.map((userId) => axios.get(constants.endpoints.user(userId)));
+          // execute promises for users in the team
+          axios.all(userPromises)
+            .then((results) => {
+              // extract data from promise object
+              const resultData = results.map((result) => result.data);
+              // set user state data
+              setUsers(resultData);
+              // for filtering purposes
+              setFilteredUsers(resultData);
+            })
+            .catch((error) => { throw new Error(error); });
         })
         .catch((error) => { throw new Error(error); });
     }
   }, [selectedTeam, team]);
 
-  // const handleInputChange = (event) => {
-  //   const userString = event.target.value;
-  //   setFilteredUserString(userString);
-  //   const userPattern = new RegExp(userString);
-  //   if (userString !== '') {
-  //     // filter based on any string entry in user object
-  //     setFilteredUsers(users.filter((user) => (userPattern.test(
-  //       user.displayName.toLowerCase()
-  //       + user.firstName.toLowerCase()
-  //       + user.lastName.toLowerCase()
-  //       + user.location.toLowerCase(),
-  //     ))));
-  //   } else {
-  //     setFilteredUsers(users);
-  //   }
-  // };
+  // input field handling
+  const handleInputChange = (event) => {
+    const userString = event.target.value;
+    setFilteredUserString(userString);
+    const userPattern = new RegExp(userString);
+    if (userString !== '') {
+      // filter based on any string entry in user object
+      setFilteredUsers(users.filter((user) => (userPattern.test(
+        user.displayName.toLowerCase()
+        + user.firstName.toLowerCase()
+        + user.lastName.toLowerCase()
+        + user.location.toLowerCase(),
+      ))));
+    } else {
+      // update back to full list
+      setFilteredUsers(users);
+    }
+  };
 
   return (
     <div>
-      {users && selectedTeam === team.id && (
+      {filteredUsers && selectedTeam === team.id && (
         <AccordionDetails data-testid={team.id} style={{ display: 'grid' }}>
-          {/* <TextField
+          <TextField
             key={team.id}
             style={{ margin: '10px' }}
             id={team.id}
-            size="medium"
-            label="Filter users..."
+            size='medium'
+            label='Filter users...'
             value={filteredUserString}
-            variant="outlined"
+            variant='outlined'
             onChange={handleInputChange}
-          /> */}
+            fullWidth
+          />
           <table>
             <thead>
               <tr>
-                {tableHeaders.map((header) => (
+                {constants.tableHeaders.map((header) => (
                   <th key={header} align="center">{header}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <User key={user} userId={user} isTeamLead={user === teamLeadId} />
+              {filteredUsers.map((user) => (
+                <User key={user.id} user={user} isTeamLead={user.id === teamLeadId} />
               ))}
             </tbody>
           </table>

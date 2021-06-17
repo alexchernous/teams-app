@@ -38,6 +38,20 @@ jest.mock('../components/Team', () => ({
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td>
+            user Avatar
+          </td>
+          <td>
+            user Display Name
+          </td>
+          <td>
+            user First Name
+          </td>
+          <td>
+            user Last Name
+          </td>
+        </tr>
       </tbody>
     </table>
   ),
@@ -57,9 +71,12 @@ describe('<HomePage />', () => {
     await act(async () => {
       render(<HomePage />);
       await waitFor(() => {
-        const filterInput = screen.getAllByText('Filter teams...');
+        const filterInput = screen.getByLabelText('Filter teams...');
+        const team = screen.getByTestId('team-id-1');
         // team filter field exists
-        expect(filterInput[0]).toBeInTheDocument();
+        expect(filterInput).toBeInTheDocument();
+        // team exists
+        expect(team).toBeInTheDocument();
       });
     });
   });
