@@ -32,7 +32,7 @@ describe('<Team />', () => {
     name: 'Team 1 name',
   };
 
-  test('renders Teams', async () => {
+  test('renders team component and checks for team id presence', async () => {
     // for /team/<id>
     axiosMock.get.mockResolvedValueOnce({
       data: {

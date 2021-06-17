@@ -60,7 +60,7 @@ jest.mock('../components/Team', () => ({
 describe('<HomePage />', () => {
   afterEach(cleanup);
 
-  test('renders filter input', async () => {
+  test('renders filter and team accordion and checks for team id / filter input presence', async () => {
     axiosMock.get.mockResolvedValueOnce({
       data: [{
         id: 'team-id-1',

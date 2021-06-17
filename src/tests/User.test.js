@@ -13,7 +13,7 @@ import User from '../components/User';
 describe('<User />', () => {
   afterEach(cleanup);
 
-  test('renders Users', async () => {
+  test('renders user component and checks for lead team member presence', async () => {
     const user = {
       avatarUrl: '!',
       displayName: 'bobLead',

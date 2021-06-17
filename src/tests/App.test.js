@@ -16,7 +16,7 @@ jest.mock('../components/HomePage', () => ({
 describe('<App />', () => {
   afterEach(cleanup);
 
-  test('renders', async () => {
+  test('renders component', async () => {
     await act(async () => {
       const { container } = render(<App />);
       // simply renders the component
