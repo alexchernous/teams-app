@@ -41,5 +41,7 @@ The component structure will look like this:
 
 ## Areas of improvement
 - Console will throw `Warning: findDOMNode is deprecated in StrictMode.` when *material-ui* `Accordion` is open... ideally this would be fixed
-- Can always do with more tests :) (should also test filter input)
+- Can always do with more tests :)
+  - should test filter input
+  - should test user click events on accordions
 - UI quality could be improved
