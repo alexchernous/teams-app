@@ -35,10 +35,11 @@ The component structure will look like this:
 - `<User />` component builds table row from `user` object passed in `props`.
 
 ## Tests
+- Using `jest` and `react-testing-library` to render and check for presence of relevant components.
 - Mocking `axios` and resolving with test data (in `src/tests/__mocks__/axios.js`).
 - Mocking children components for simpler parent component tests.
 
 ## Areas of improvement
 - Console will throw `Warning: findDOMNode is deprecated in StrictMode.` when *material-ui* `Accordion` is open... ideally this would be fixed
-- More tests! (should also test filter input)
+- Can always do with more tests :) (should also test filter input)
 - UI quality could be improved
